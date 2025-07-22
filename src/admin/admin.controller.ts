@@ -1,40 +1,37 @@
-import { Controller, Get, Post, Put, Delete, Param, Query, Body } from '@nestjs/common';
-import { CreateCounsellorDto } from './dtos/createCounsellor.dto'; 
+import { Controller, Get, Post, Put, Delete, Param, Body, Query } from "@nestjs/common";
+import { AdminService } from "./admin.service";
 
 @Controller('admin')
 export class AdminController {
+    constructor(private readonly adminService: AdminService) {}
 
-    @Get('counsellor')
-    getAllCounsellors() {
-        return { message: 'Lists all the counsellors in the database' };
+    @Get()
+    getAdmins() {
+        return this.adminService.getAdmins();
     }
 
-    @Get('counsellor/search')
-    searchCounsellors(@Query('name') name: string) {
-        return { message: `Searching counsellors with named: ${name}` };
+    @Get('search')
+    searchAdmin(@Query('name') name: string) {
+        return this.adminService.searchAdmin(name);
     }
 
-    @Get('counsellor/:counsellorId')
-    getCounsellorById(@Param('counsellorId') counsellorId: string) {
-        return { message: `Retrieves a counsellor based on id: ${counsellorId}` };
+    @Get(':id')
+    getAdminById(@Param('id') id: string) {
+        return this.adminService.getAdminById(id);
     }
 
-    @Post('counsellor')
-    createCounsellor(@Body() data: CreateCounsellorDto) {
-        return { data };
+    @Post()
+    createAdmin(@Body() data: any) {
+        return this.adminService.createAdmin(data);
     }
 
-    @Put('counsellor/:counsellorId')
-    updateCounsellor(
-        @Param('counsellorId') counsellorId: string,
-        @Body() data: CreateCounsellorDto
-    ) {
-        return { message: `Updates counsellor with id: ${counsellorId}`, data };
+    @Put(':id')
+    updateAdmin(@Param('id') id: string, @Body() data: any) {
+        return this.adminService.updateAdmin(id, data);
     }
 
-    @Delete('counsellor/:counsellorId')
-    deleteCounsellor(@Param('counsellorId') counsellorId: string) {
-        return { message: `Deletes a counsellor based on id: ${counsellorId}` };
+    @Delete(':id')
+    deleteAdmin(@Param('id') id: string) {
+        return this.adminService.deleteAdmin(id);
     }
-    //typer
 }
