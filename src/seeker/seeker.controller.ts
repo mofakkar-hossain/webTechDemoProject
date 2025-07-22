@@ -8,8 +8,26 @@ export class SeekerController {
         return this.SeekerService.getScholarships();
     }
     @Get('search')
-    searchScholarships(@Query ('sname') sname:string ){
-        return this.SeekerService.searchScholarships(sname);
+    searchScholarships(@Query ('sname') ScholarshipName:string ){
+        return this.SeekerService.searchScholarships(ScholarshipName);
     }
+    @Post('create')
+    createApplication(@Body('data') data:any){
+        return this.SeekerService.createApplication(data);
+    }
+    @Put(':id')
+    updateAdmin(@Param('id') id: string, @Body() data: any) {
+        return this.SeekerService.updateApplication(id, data);
+    }
+    @Get('filter/by-country-degree')
+    filter(@Query('country') country: string, @Query('degree') degree: string) {
+        return this.SeekerService.filterScholarships(country, degree);
+    }
+    @Delete(':id')
+    deleteApplication(@Param('id') id: string) {
+        return this.SeekerService.deleteApplication(id);
+    }
+    
+
 
 }
