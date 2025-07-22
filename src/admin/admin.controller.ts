@@ -3,6 +3,7 @@ import { CreateCounsellorDto } from './dtos/createCounsellor.dto';
 
 @Controller('admin')
 export class AdminController {
+
     @Get('counsellor')
     getAllCounsellors() {
         return { message: 'Lists all the counsellors in the database' };
@@ -35,4 +36,5 @@ export class AdminController {
     deleteCounsellor(@Param('counsellorId') counsellorId: string) {
         return { message: `Deletes a counsellor based on id: ${counsellorId}` };
     }
+    //typer
 }
