@@ -2,27 +2,31 @@ import { Injectable } from "@nestjs/common";
 
 @Injectable()
 export class AdminService {
-  getAdmins() {
-    return ['Admin1', 'Admin2', 'Admin3'];
+  getAllUsers(role?: string) {
+    if (role) {
+      return { message: `Filtered users by role: ${role}` };
+    }
+    return { message: 'All users fetched' };
   }
 
-  getAdminById(id: string) {
-    return { message: 'Get admin by id', id };
+  getUserById(id: string) {
+    return { id, name: 'Sample User', role: 'seeker' };
   }
 
-  createAdmin(data: any) {
-    return { message: 'Admin created', data };
+  addUser(data: any) {
+    return { message: 'User added', user: data };
   }
 
-  updateAdmin(id: string, data: any) {
-    return { message: `Admin with id ${id} updated`, data };
+  updateUser(id: string, data: any) {
+    return { message: `User ${id} updated`, data };
   }
 
-  deleteAdmin(id: string) {
-    return { message: 'Deleted admin', id };
+  changeUserRole(id: string, role: string) {
+    return { message: `User ${id} role changed to ${role}` };
   }
 
-  searchAdmin(name: string) {
-    return { message: 'Searched for admin', name };
+  removeUser(id: string) {
+    return { message: `User ${id} removed` };
   }
 }
+
