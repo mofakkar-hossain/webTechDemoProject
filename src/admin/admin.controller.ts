@@ -1,37 +1,43 @@
-import { Controller, Get, Post, Put, Delete, Param, Body, Query } from "@nestjs/common";
+import { Controller, Get, Post, Put, Delete, Patch, Param, Body, Query } from "@nestjs/common";
 import { AdminService } from "./admin.service";
+import { UsePipes, ValidationPipe } from '@nestjs/common';
+import { CreateAdminDto } from './dto/createAdmin.dto';
 
 @Controller('admin')
 export class AdminController {
     constructor(private readonly adminService: AdminService) {}
 
-    @Get()
-    getAdmins() {
-        return this.adminService.getAdmins();
+    @Get('users')
+    getAllUsers(@Query('role') role?: string) {
+        return this.adminService.getAllUsers(role);
     }
 
-    @Get('search')
-    searchAdmin(@Query('name') name: string) {
-        return this.adminService.searchAdmin(name);
+    @Get('user/:id')
+    getUserById(@Param('id') id: string) {
+      return this.adminService.getUserById(id);
     }
 
-    @Get(':id')
-    getAdminById(@Param('id') id: string) {
-        return this.adminService.getAdminById(id);
+  
+    @Post('add-user')
+    @UsePipes(new ValidationPipe({ whitelist: true }))
+    addUser(@Body() userData: CreateAdminDto) 
+    {
+        return this.adminService.addUser(userData);
     }
 
-    @Post()
-    createAdmin(@Body() data: any) {
-        return this.adminService.createAdmin(data);
+
+    @Put('user/:id')
+    updateUser(@Param('id') id: string, @Body() data: any) {
+        return this.adminService.updateUser(id, data);
     }
 
-    @Put(':id')
-    updateAdmin(@Param('id') id: string, @Body() data: any) {
-        return this.adminService.updateAdmin(id, data);
+    @Patch('user/:id/role')
+    changeUserRole(@Param('id') id: string, @Body('role') role: string) {
+        return this.adminService.changeUserRole(id, role);
     }
 
-    @Delete(':id')
-    deleteAdmin(@Param('id') id: string) {
-        return this.adminService.deleteAdmin(id);
+    @Delete('user/:id')
+    removeUser(@Param('id') id: string) {
+        return this.adminService.removeUser(id);
     }
 }
