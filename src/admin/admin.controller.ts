@@ -4,40 +4,39 @@ import { UsePipes, ValidationPipe } from '@nestjs/common';
 import { CreateAdminDto } from './dto/createAdmin.dto';
 
 @Controller('admin')
-export class AdminController {
+export class AdminController 
+{
     constructor(private readonly adminService: AdminService) {}
 
-    @Get('users')
-    getAllUsers(@Query('role') role?: string) {
-        return this.adminService.getAllUsers(role);
-    }
-
-    @Get('user/:id')
-    getUserById(@Param('id') id: string) {
-      return this.adminService.getUserById(id);
-    }
-
-  
-    @Post('add-user')
-    @UsePipes(new ValidationPipe({ whitelist: true }))
-    addUser(@Body() userData: CreateAdminDto) 
+    @Post('createAdmin')
+    @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
+    createAdmin(@Body() dto: CreateAdminDto) 
     {
-        return this.adminService.addUser(userData);
+        return this.adminService.createAdmin(dto);
+    }
+    
+    @Get('allAdmin')
+    getAllAdmin()
+    {
+        return this.adminService.getAllAdmin();
     }
 
-
-    @Put('user/:id')
-    updateUser(@Param('id') id: string, @Body() data: any) {
-        return this.adminService.updateUser(id, data);
+    @Get('search')
+    findByFullNameSubstring(@Query('name') name: string) 
+    {
+        return this.adminService.findByFullNameSubstring(name);
     }
 
-    @Patch('user/:id/role')
-    changeUserRole(@Param('id') id: string, @Body('role') role: string) {
-        return this.adminService.changeUserRole(id, role);
+    @Get(':userName')
+    getByUserName(@Param('userName') userName: string) 
+    {
+        return this.adminService.getByUserName(userName);
     }
 
-    @Delete('user/:id')
-    removeUser(@Param('id') id: string) {
-        return this.adminService.removeUser(id);
+    @Delete(':userName')
+    removeByUserName(@Param('userName') userName: string) 
+    {
+        return this.adminService.removeByUserName(userName);
     }
+
 }
