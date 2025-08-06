@@ -5,7 +5,7 @@ import {
   LoginCouncellorDto,
 } from './dto/create-counsellor.dto';
 
-@Controller('counselors')
+@Controller('counsellors')
 export class CounsellorController {
   constructor(private readonly counsellorService: CounsellorService) {}
 
