@@ -22,7 +22,7 @@ export class Counsellor {
   email: string;
 
   @Column()
-  password;
+  password: string;
 
   @BeforeInsert()
   @BeforeUpdate()

@@ -20,7 +20,7 @@ export class Student {
   email: string;
 
   @Column()
-  password;
+  password: string;
 
   @BeforeInsert()
   @BeforeUpdate()
