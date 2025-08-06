@@ -13,7 +13,9 @@ import {
   UploadedFile,
   FileValidator,
   ParseFilePipe,
-  FileTypeValidator
+  FileTypeValidator,
+  Patch,
+  ParseIntPipe
 } from '@nestjs/common';
 
 import { SeekerService } from './seeker.service';
@@ -21,6 +23,7 @@ import { createSeekerDto } from './dto/CreateSeeker.dto';
 import { uploadDocumentDto } from './dto/UploadDocumentDto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { MulterError, diskStorage } from 'multer';
+import { UpdateStatusDto } from './dto/updateStatus.dto';
 
 @Controller('seeker')
 export class SeekerController {
@@ -36,10 +39,10 @@ export class SeekerController {
     return this.SeekerService.searchScholarships(ScholarshipName);
   }
 
-  @Post('create')
-  createApplication(@Body('data') data: any) {
-    return this.SeekerService.createApplication(data);
-  }
+  // @Post('create')
+  // createApplication(@Body('data') data: any) {
+  //   return this.SeekerService.createApplication(data);
+  // }
 
   @Put(':id')
   updateAdmin(@Param('id') id: string, @Body() data: any) {
@@ -96,4 +99,30 @@ export class SeekerController {
       filename: file.filename,
     };
   }
+
+  @Post('create')
+  @UsePipes(new ValidationPipe())
+  createSeeker(@Body() dto: createSeekerDto) {
+    return this.SeekerService.createSeeker(dto);
+  }
+
+  @Patch(':id/status')
+  @UsePipes(new ValidationPipe())
+  updateStatus(
+  @Param('id', ParseIntPipe) id: number,
+  @Body() dto: UpdateStatusDto,
+) {
+  return this.SeekerService.updateStatus(id, dto); 
+}
+
+  @Get('inactive')
+  getInactive() {
+    return this.SeekerService.getInactive();
+  }
+
+  @Get('age/above-40')
+  getOlderThan40() {
+    return this.SeekerService.getOlderThan40();
+  }
+
 }
