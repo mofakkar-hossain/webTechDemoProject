@@ -1,6 +1,13 @@
 import { Counsellor } from 'src/counsellor/entities/counsellor.entity';
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
-
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  BeforeInsert,
+  BeforeUpdate,
+} from 'typeorm';
+import * as bcrypt from 'bcrypt';
 @Entity()
 export class Student {
   @PrimaryGeneratedColumn()
@@ -11,6 +18,18 @@ export class Student {
 
   @Column({ unique: true })
   email: string;
+
+  @Column()
+  password;
+
+  @BeforeInsert()
+  @BeforeUpdate()
+  async hashPassword() {
+    if (this.password) {
+      const salt = bcrypt.genSaltSync();
+      this.password = bcrypt.hashSync(this.password, salt);
+    }
+  }
 
   @Column({ nullable: true })
   phone: string;

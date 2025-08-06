@@ -1,6 +1,14 @@
 import { Appointment } from 'src/appointment/entities/appointment.entity';
 import { Student } from 'src/student/entities/student.entity';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BeforeInsert,
+  BeforeUpdate,
+  Column,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import * as bcrypt from 'bcrypt';
 
 @Entity()
 export class Counsellor {
@@ -12,6 +20,18 @@ export class Counsellor {
 
   @Column({ unique: true })
   email: string;
+
+  @Column()
+  password;
+
+  @BeforeInsert()
+  @BeforeUpdate()
+  async hashPassword() {
+    if (this.password) {
+      const salt = bcrypt.genSaltSync();
+      this.password = bcrypt.hashSync(this.password, salt);
+    }
+  }
 
   @Column({ nullable: true })
   phone: string;

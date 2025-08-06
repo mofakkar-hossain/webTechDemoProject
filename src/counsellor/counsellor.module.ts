@@ -10,4 +10,4 @@ import { CounsellorController } from './counsellor.controller';
   controllers: [CounsellorController],
   exports: [CounsellorService],
 })
-export class CounselorModule {}
+export class CounsellorModule {}

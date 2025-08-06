@@ -18,3 +18,11 @@ export class CreateCounsellorDto {
   @IsString()
   specialization?: string;
 }
+
+export class LoginCouncellorDto {
+  @IsEmail()
+  email: string;
+
+  @IsString()
+  password: string;
+}

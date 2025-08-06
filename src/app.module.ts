@@ -4,9 +4,20 @@ import { SeekerModule } from './seeker/seeker.module';
 import { CounsellorModule } from './counsellor/counsellor.module';
 import { AppointmentModule } from './appointment/appointment.module';
 import { StudentModule } from './student/student.module';
+import { JwtModule } from '@nestjs/jwt';
 
+JwtModule.register({
+  secret: 'trash',
+  signOptions: { expiresIn: '7d' },
+});
 @Module({
-  imports: [AdminModule,SeekerModule, CounsellorModule, AppointmentModule, StudentModule],
+  imports: [
+    AdminModule,
+    SeekerModule,
+    CounsellorModule,
+    AppointmentModule,
+    StudentModule,
+  ],
   controllers: [],
   providers: [],
 })
