@@ -1,14 +1,13 @@
 import { Module } from '@nestjs/common';
 import { AdminModule } from './admin/admin.module';
 import { SeekerModule } from './seeker/seeker.module';
-import { CounsellorModule } from './counsellor/counsellor.module';
-import { AppointmentModule } from './appointment/appointment.module';
-import { StudentModule } from './student/student.module';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Student } from './student/entities/student.entity';
-import { Counsellor } from './counsellor/entities/counsellor.entity';
-import { Appointment } from './appointment/entities/appointment.entity';
+import { CounselorModule } from './counselor/counselor.module';
+import { Counselor } from './counselor/entities/counselor.entity';
+import { CounselorSpecialization } from './counselor/entities/counselor-specialization.entity';
+import { Consultation } from './counselor/entities/consultation.entity';
+import { ConsultationRequest } from './counselor/entities/consultation-request.entity';
 
 JwtModule.register({
   secret: 'trash',
@@ -18,20 +17,24 @@ JwtModule.register({
   imports: [
     AdminModule,
     SeekerModule,
-    CounsellorModule,
-    AppointmentModule,
-    StudentModule,
+    CounselorModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
       port: 5432,
       username: 'postgres',
       password: 'avishek',
-      entities: [Counsellor, Student, Appointment],
+      entities: [
+        Counselor,
+        CounselorSpecialization,
+        Consultation,
+        ConsultationRequest,
+      ],
       database: 'testDb',
       autoLoadEntities: true,
       synchronize: true,
     }),
+    CounselorModule,
   ],
   controllers: [],
   providers: [],
