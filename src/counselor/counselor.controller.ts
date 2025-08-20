@@ -114,6 +114,36 @@ export class CounselorController {
     );
   }
 
+  // min rate search point
+  @Get('search/by-min-rate/:minRate')
+  async findCounselorsByMinRate(@Param('minRate') minRate: number) {
+    const counselors =
+      await this.counselorService.findCounselorsByMinRate(minRate);
+
+    return {
+      status: 'success',
+      message: `Found ${counselors.length} counselors with hourly rate >= $${minRate}`,
+      data: counselors,
+    };
+  }
+
+  // counselor by specialization
+  @Get('search/by-specialization/:specialization')
+  async findCounselorsBySpecialization(
+    @Param('specialization') specialization: string,
+  ) {
+    const counselors =
+      await this.counselorService.findCounselorsBySpecialization(
+        specialization,
+      );
+
+    return {
+      status: 'success',
+      message: `Found ${counselors.length} counselors with specialization: ${specialization}`,
+      data: counselors,
+    };
+  }
+
   // Consultation endpoints
   @UseGuards(JwtAuthGuard)
   @Post('consultations')

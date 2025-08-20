@@ -30,6 +30,7 @@ import { CreateConsultationDto } from './dto/create-consultation.dto';
 @Injectable()
 export class CounselorService {
   constructor(
+    // Importing all the Repositories here
     @InjectRepository(Counselor)
     private counselorRepository: Repository<Counselor>,
     @InjectRepository(CounselorSpecialization)
@@ -41,6 +42,7 @@ export class CounselorService {
     private jwtService: JwtService,
   ) {}
 
+  //Create a new counselor using this function
   async register(createCounselorDto: CreateCounselorDto) {
     const existingCounselor = await this.counselorRepository.findOne({
       where: { email: createCounselorDto.email },
@@ -67,6 +69,35 @@ export class CounselorService {
     return result;
   }
 
+  // Find counselors based on specialization
+  async findCounselorsBySpecialization(
+    specialization: string,
+  ): Promise<Counselor[]> {
+    return this.counselorRepository
+      .createQueryBuilder('counselor')
+      .leftJoinAndSelect('counselor.specializations', 'specializations')
+      .leftJoinAndSelect('counselor.user', 'user')
+      .where('counselor.isActive = :isActive', { isActive: true })
+      .andWhere('specializations.name ILIKE :specialization', {
+        specialization: `%${specialization}%`,
+      })
+      .orderBy('counselor.rating', 'DESC')
+      .getMany();
+  }
+
+  // find by hourly rate
+  async findCounselorsByMinRate(minRate: number): Promise<Counselor[]> {
+    return this.counselorRepository
+      .createQueryBuilder('counselor')
+      .leftJoinAndSelect('counselor.specializations', 'specializations')
+      .leftJoinAndSelect('counselor.user', 'user')
+      .where('counselor.isActive = :isActive', { isActive: true })
+      .andWhere('counselor.hourlyRate >= :minRate', { minRate })
+      .orderBy('counselor.hourlyRate', 'ASC')
+      .getMany();
+  }
+
+  //Counselors loging using this function returns info and token but not the passowrd
   async login(loginCounselorDto: LoginCounselorDto) {
     const counselor = await this.counselorRepository.findOne({
       where: { email: loginCounselorDto.email },
@@ -99,6 +130,7 @@ export class CounselorService {
     };
   }
 
+  //Get the profile info of the user return everything except the password
   async getProfile(counselorId: string) {
     const counselor = await this.counselorRepository.findOne({
       where: { id: counselorId },
@@ -113,6 +145,7 @@ export class CounselorService {
     return result;
   }
 
+  //update the profile info of the current loged in counselor
   async updateProfile(
     counselorId: string,
     updateCounselorDto: UpdateCounselorDto,
@@ -132,7 +165,7 @@ export class CounselorService {
     return result;
   }
 
-  // Specializations
+  // Add specialization to the current counselor
   async addSpecialization(
     counselorId: string,
     createSpecializationDto: CreateSpecializationDto,
@@ -153,12 +186,14 @@ export class CounselorService {
     return await this.specializationRepository.save(specialization);
   }
 
+  //print out all the specializations for the current logged in counselor
   async getSpecializations(counselorId: string) {
     return await this.specializationRepository.find({
       where: { counselor: { id: counselorId } },
     });
   }
 
+  // removes a specific specialization of the current logged in counselor by id
   async removeSpecialization(counselorId: string, specializationId: string) {
     const specialization = await this.specializationRepository.findOne({
       where: { id: specializationId, counselor: { id: counselorId } },
@@ -172,7 +207,7 @@ export class CounselorService {
     return { message: 'Specialization removed successfully' };
   }
 
-  // Consultation Requests
+  // Get all the requests made to the counselor by the seakers
   async getConsultationRequests(counselorId: string, status?: RequestStatus) {
     const where: any = { counselor: { id: counselorId } };
     if (status) {
@@ -185,6 +220,7 @@ export class CounselorService {
     });
   }
 
+  // updates the status of a consultation request so that the seaker is notifies of his/her request beeing seen
   async updateConsultationRequest(
     counselorId: string,
     requestId: string,
@@ -202,7 +238,7 @@ export class CounselorService {
     return await this.consultationRequestRepository.save(request);
   }
 
-  // Consultations
+  // counselor creates a consultation for the request that has been made to him
   async createConsultation(
     counselorId: string,
     createConsultationDto: CreateConsultationDto,
@@ -238,6 +274,7 @@ export class CounselorService {
     return savedConsultation;
   }
 
+  // counselor sees all his consultations
   async getConsultations(counselorId: string, status?: ConsultationStatus) {
     const where: any = { counselor: { id: counselorId } };
     if (status) {
@@ -250,6 +287,7 @@ export class CounselorService {
     });
   }
 
+  // counselor updates one of his many consultations
   async updateConsultation(
     counselorId: string,
     consultationId: string,
@@ -267,7 +305,7 @@ export class CounselorService {
     return await this.consultationRepository.save(consultation);
   }
 
-  // Dashboard stats
+  // Counselor gets his dash board status
   async getDashboardStats(counselorId: string) {
     const [
       totalRequests,
