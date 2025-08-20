@@ -36,7 +36,7 @@ export class Counselor {
   @Column({ nullable: true })
   profilePicture: string;
 
-  @Column({ type: 'number', default: 0 })
+  @Column({ type: 'int', default: 0 })
   yearsOfExprience: number;
 
   @Column({ nullable: true })

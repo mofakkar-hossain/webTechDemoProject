@@ -12,6 +12,7 @@ import { Consultation } from './entities/consultation.entity';
 
 @Module({
   imports: [
+    ConfigModule,
     TypeOrmModule.forFeature([
       Counselor,
       CounselorSpecialization,
