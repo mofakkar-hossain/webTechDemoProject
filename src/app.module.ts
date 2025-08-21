@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { AdminModule } from './admin/admin.module';
 import { SeekerModule } from './seeker/seeker.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AuthModule } from './admin/auth/auth.module';
 
 @Module({
   imports: [AdminModule,SeekerModule, TypeOrmModule.forRoot(
@@ -14,6 +15,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     autoLoadEntities: true,
     synchronize: true,
   }),
+  AdminModule,
+  AuthModule,
 ],  
 controllers: [],
 providers: [],

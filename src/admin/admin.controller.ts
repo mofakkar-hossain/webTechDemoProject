@@ -1,42 +1,54 @@
-import { Controller, Get, Post, Put, Delete, Patch, Param, Body, Query } from "@nestjs/common";
-import { AdminService } from "./admin.service";
-import { UsePipes, ValidationPipe } from '@nestjs/common';
-import { CreateAdminDto } from './dto/createAdmin.dto';
+import { Controller, Post, Get, Put, Delete, Param, Body, UsePipes, ValidationPipe, UseGuards, Patch } from '@nestjs/common';
+import { AdminService } from './admin.service';
+import { CreateAdminDto } from './dtos/createAdmin.dto';
+import { CreateNoticeDto } from './dtos/createNotice.dto';
+import { JwtAuthGuard } from './auth/jwt-auth.guard';
 
 @Controller('admin')
-export class AdminController 
-{
-    constructor(private readonly adminService: AdminService) {}
+export class AdminController {
+  constructor(private adminService: AdminService) {}
 
-    @Post('createAdmin')
-    @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
-    createAdmin(@Body() dto: CreateAdminDto) 
-    {
-        return this.adminService.createAdmin(dto);
-    }
-    
-    @Get('allAdmin')
-    getAllAdmin()
-    {
-        return this.adminService.getAllAdmin();
-    }
+  @Post()
+  @UsePipes(new ValidationPipe())
+  createAdmin(@Body() dto: CreateAdminDto) {
+    return this.adminService.createAdmin(dto);
+  }
 
-    @Get('search')
-    findByFullNameSubstring(@Query('name') name: string) 
-    {
-        return this.adminService.findByFullNameSubstring(name);
-    }
+  @Get()
+  @UseGuards(JwtAuthGuard)
+  getAllAdmins() {
+    return this.adminService.getAllAdmins();
+  }
 
-    @Get(':userName')
-    getByUserName(@Param('userName') userName: string) 
-    {
-        return this.adminService.getByUserName(userName);
-    }
+  @Post(':id/notices')
+  @UseGuards(JwtAuthGuard)
+  @UsePipes(new ValidationPipe())
+  createNotice(@Param('id') id: number, @Body() dto: CreateNoticeDto) {
+    return this.adminService.createNotice(id, dto);
+  }
 
-    @Delete(':userName')
-    removeByUserName(@Param('userName') userName: string) 
-    {
-        return this.adminService.removeByUserName(userName);
-    }
+  @Get(':id/notices')
+  @UseGuards(JwtAuthGuard)
+  getNotices(@Param('id') id: number) {
+    return this.adminService.getNotices(id);
+  }
 
+  @Put('notices/:noticeId')
+  @UseGuards(JwtAuthGuard)
+  @UsePipes(new ValidationPipe())
+  updateNotice(@Param('noticeId') id: number, @Body() dto: CreateNoticeDto) {
+    return this.adminService.updateNotice(id, dto);
+  }
+
+  @Patch('notices/:noticeId/publish')
+  @UseGuards(JwtAuthGuard)
+  toggleNoticePublish(@Param('noticeId') id: number) {
+    return this.adminService.toggleNoticePublish(id);
+  }
+
+  @Delete('notices/:noticeId')
+  @UseGuards(JwtAuthGuard)
+  deleteNotice(@Param('noticeId') id: number) {
+    return this.adminService.deleteNotice(id);
+  }
 }
